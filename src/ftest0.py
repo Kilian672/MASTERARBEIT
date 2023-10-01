@@ -1,6 +1,7 @@
 import pandas as pd
 from bigtree import dict_to_tree, postorder_iter
 import sys 
+import matplotlib.pyplot as plt 
 
 class FTEST0: 
 
@@ -33,9 +34,16 @@ class FTEST0:
 
         return count <= self.k
 
-
-        #self.root.show(attr_list=["weight", "sup", "dem"])
-
+    def draw_algorithm(self): 
+        
+ 
+        figure, axes = plt.subplots() 
+        cc = plt.Circle(( 0.5 , 0.5 ), 0.4 , alpha=0.1) 
+        
+        axes.set_aspect( 1 ) 
+        axes.add_artist( cc ) 
+        plt.title( 'Colored Circle' ) 
+        plt.show()      
 
 
 
@@ -58,8 +66,9 @@ if __name__ == "__main__":
     }
 
     ftest0 = FTEST0(T, Lambda, k)
-    print(ftest0.test_feasibility())
-
+    #print(ftest0.test_feasibility())
+    ftest0.draw_algorithm()
+    
     #root = dict_to_tree(path_dict)
 
     #root.show(attr_list=["weight"])
