@@ -1,49 +1,65 @@
-import igraph
-import plotly.graph_objects as go
-from igraph import Graph, EdgeSeq
+import sys
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
+class Tree: 
 
-nr_vertices = 25
-v_label = list(map(str, range(nr_vertices)))
-G = Graph.Tree(nr_vertices, 2) # 2 stands for children number
-lay = G.layout('rt')
+    def __init__(self, nested_tuple) -> None:
+        
+        self.T = nx.from_nested_tuple(nested_tuple, sensible_relabeling=True)
+        self.attributes = {}
+        self.node_colors = {}
+    
+    def plot_tree(self) -> None:
+        
+        
+        values = [self.node_colors.get(node, 1) for node in self.T.nodes()]
 
-position = {k: lay[k] for k in range(nr_vertices)}
-Y = [lay[k][1] for k in range(nr_vertices)]
-M = max(Y)
+        pos = nx.spring_layout(self.T)
+        nx.draw_networkx_nodes(self.T, pos, node_size = 500, node_color=values)
+        nx.draw_networkx_labels(self.T, pos)
+        nx.draw_networkx_edges(self.T, pos, arrows=False)
+        plt.show()
 
-es = EdgeSeq(G) # sequence of edges
-E = [e.tuple for e in G.es] # list of edges
+    def test_feasibility(self, lambd, k, weights):
+    
+        count = 0
+        self.attributes = {node:{'sup': sys.maxsize, 'dem': lambd/weights[node][0], 'dist_par': weights[node][1]} 
+                           for node in nx.dfs_postorder_nodes(self.T)}
 
-L = len(position)
-Xn = [position[k][0] for k in range(L)]
-Yn = [2*M-position[k][1] for k in range(L)]
-Xe = []
-Ye = []
-for edge in E:
-    Xe+=[position[edge[0]][0],position[edge[1]][0], None]
-    Ye+=[2*M-position[edge[0]][1],2*M-position[edge[1]][1], None]
+        for node in nx.dfs_postorder_nodes(self.T):
+            for child in self.get_children(node):
+                if self.attributes[child]['sup'] <= self.attributes[child]['dem']:
+                    self.attributes[node]['sup'] = min(self.attributes[node]['sup'], self.attributes[child]['sup']+self.attributes[child]['dist_par'])
+                else: 
+                    if self.attributes[child]['dem'] < self.attributes[child]['dist_par']: 
+                        count = count + 1       # place a center on the edge e(u,v) at distance dem(u) from u
+                        self.attributes[node]['sup'] = min(self.attributes[node]['sup'], self.attributes[child]['dist_par'] - self.attributes[child]['dem'])
+                        self.node_colors[child] = 0.5
+                        print(child)
+                        print(self.attributes[node]['sup'])
+                    else: 
+                        self.attributes[node]['dem'] = min(self.attributes[node]['dem'], self.attributes[child]['dem'] - self.attributes[child]['dist_par'])
 
-labels = v_label
+        if self.attributes[0]["sup"] > self.attributes[0]["dem"]: 
+            self.node_colors[0] = 0.5 
+            count = count + 1
 
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=Xe,
-                   y=Ye,
-                   mode='lines',
-                   line=dict(color='rgb(210,210,210)', width=1),
-                   hoverinfo='none'
-                   ))
-fig.add_trace(go.Scatter(x=Xn,
-                  y=Yn,
-                  mode='markers',
-                  name='bla',
-                  marker=dict(symbol='circle-dot',
-                                size=18,
-                                color='#6175c1',    #'#DB4551',
-                                line=dict(color='rgb(50,50,50)', width=1)
-                                ),
-                  text=labels,
-                  hoverinfo='text',
-                  opacity=0.8
-                  ))
+        return count <= k
+
+    def get_children(self, node):
+        children = []
+        for key in nx.all_neighbors(self.T, node): 
+            if key > node: 
+                children.append(key)
+        return children
+
+
+if __name__ == "__main__": 
+
+    weights = [(1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1), (1,1)]
+    nested_tuple = (((),((), ())), ((), (), ()))
+    tree = Tree(nested_tuple)
+    print(tree.test_feasibility(1, 3, weights))
+    tree.plot_tree()
