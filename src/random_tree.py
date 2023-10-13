@@ -1,6 +1,7 @@
 import random
 import networkx as nx 
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class RANDOMTREE: 
@@ -22,7 +23,18 @@ class RANDOMTREE:
             node_dict[node] = {"color": random.randint(1,self.colors)}
 
         return node_dict    
+
+    def get_dist_mat(self): 
         
+        apd = dict(nx.all_pairs_dijkstra(random_tree.Tree, weight="weight"))
+        dim = len(apd.keys())
+        dist_mat = np.zeros((dim, dim))
+        for i in apd.keys(): 
+            for j in apd[i][0].keys(): 
+                dist_mat[i][j] = apd[i][0][j]
+
+        return dist_mat
+     
     def get_random_tree(self): 
         
         tree_list = self.create_random_tree(self.height, self.max_noc)[0]
@@ -44,11 +56,11 @@ class RANDOMTREE:
             return None 
         
         if height == 0: 
-            return None 
+            return {0: []} 
         
         if height == 1:
-            random_list = list(range(2, 2+random.randint(1,max_noc)))
-            tree = {1: random_list}
+            random_list = list(range(1, 1+random.randint(1,max_noc)))
+            tree = {0: random_list}
             for index in random_list: 
                 tree[index] = []
             return [tree, random_list]
@@ -93,5 +105,8 @@ class RANDOMTREE:
 
 if __name__ == "__main__": 
 
-    random_tree = RANDOMTREE(3, 4, edge_weights=False, colors=2)
+    random_tree = RANDOMTREE(2, 2, edge_weights=True, colors=2)
+    print(dict(nx.all_pairs_dijkstra(random_tree.Tree, weight="weight")))
+    print(random_tree.get_dist_mat())
     random_tree.draw_tree()
+    
