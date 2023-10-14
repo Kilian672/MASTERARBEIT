@@ -6,12 +6,16 @@ import numpy as np
 
 class RANDOMTREE: 
 
-    def __init__(self, height, max_noc, edge_weights=True, colors=None):
+    def __init__(self, height, max_noc, adj_list=None, edge_weights=True, colors=None):
         self.height = height
         self.max_noc = max_noc 
+        self.adj_list = adj_list
         self.edge_weights = edge_weights
         self.colors = colors
-        self.Tree = self.get_random_tree()
+        if adj_list is None: 
+            self.Tree = self.get_random_tree()
+        else: 
+            self.Tree = self.init_tree()
         if self.colors is not None: 
             self.node_dict = self.color_tree()
         else: 
@@ -22,22 +26,33 @@ class RANDOMTREE:
     
     def get_number_of_colors(self):
         
-        if self.colors is not None: 
+        if self.colors is not None and self.adj_list is None: 
             return self.colors
+        elif self.adj_list is not None: 
+            noc = 0
+            color_list = []
+            for node in self.node_dict.keys(): 
+                if self.node_dict[node]["color"] not in color_list: 
+                    noc = noc + 1
+                    color_list.append(self.node_dict[node]["color"])
+
+            return noc
         else: 
             return 1
 
     def color_tree(self): 
         node_dict = {}
         for node in self.Tree.nodes.keys():
-            node_dict[node] = {"color": random.randint(1,self.colors)}
+            if self.adj_list is None: 
+                node_dict[node] = {"color": random.randint(1,self.colors)}
+            else: 
+                node_dict[node] = {"color": self.adj_list[node][1]}
 
         return node_dict    
 
     def get_dist_mat(self): 
         
         apd = dict(nx.all_pairs_dijkstra(self.Tree, weight="weight"))
-        #print(apd)
         dim = len(apd.keys())
         dist_mat = np.zeros((dim, dim))
         for i in apd.keys(): 
@@ -45,7 +60,23 @@ class RANDOMTREE:
                 dist_mat[i][j] = apd[i][0][j]
 
         return dist_mat
-     
+    
+    def init_tree(self): 
+
+        tree_list = self.adj_list
+        G = nx.Graph()
+        G.add_nodes_from(list(tree_list.keys()))
+        for node in tree_list.keys():
+            if tree_list[node][0] != []: 
+                for child in tree_list[node][0]: 
+                    if self.edge_weights: 
+                        G.add_edge(node, child, weight=random.randint(1,10))
+                    else: 
+                        G.add_edge(node, child)
+
+        return G
+
+
     def get_random_tree(self): 
         
         tree_list = self.create_random_tree(self.height, self.max_noc)[0]
@@ -117,6 +148,6 @@ class RANDOMTREE:
 if __name__ == "__main__": 
 
     random_tree = RANDOMTREE(2, 2, edge_weights=True, colors=2)
-    print(random_tree.Tree.nodes)
+    print(random_tree.node_dict)
     random_tree.draw_tree()
     
