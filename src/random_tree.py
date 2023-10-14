@@ -17,6 +17,16 @@ class RANDOMTREE:
         else: 
             self.node_dict = None
 
+    def get_number_of_nodes(self): 
+        return len(self.Tree.nodes)
+    
+    def get_number_of_colors(self):
+        
+        if self.colors is not None: 
+            return self.colors
+        else: 
+            return 1
+
     def color_tree(self): 
         node_dict = {}
         for node in self.Tree.nodes.keys():
@@ -26,7 +36,8 @@ class RANDOMTREE:
 
     def get_dist_mat(self): 
         
-        apd = dict(nx.all_pairs_dijkstra(random_tree.Tree, weight="weight"))
+        apd = dict(nx.all_pairs_dijkstra(self.Tree, weight="weight"))
+        #print(apd)
         dim = len(apd.keys())
         dist_mat = np.zeros((dim, dim))
         for i in apd.keys(): 
@@ -106,7 +117,6 @@ class RANDOMTREE:
 if __name__ == "__main__": 
 
     random_tree = RANDOMTREE(2, 2, edge_weights=True, colors=2)
-    print(dict(nx.all_pairs_dijkstra(random_tree.Tree, weight="weight")))
-    print(random_tree.get_dist_mat())
+    print(random_tree.Tree.nodes)
     random_tree.draw_tree()
     
