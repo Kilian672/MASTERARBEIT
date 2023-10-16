@@ -1,6 +1,8 @@
 import random
 import networkx as nx 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib as mpl
 import numpy as np
 
 
@@ -208,11 +210,39 @@ class RANDOMTREE:
         nx.draw_networkx_edge_labels(self.Tree, pos, edge_labels = edge_labels)
 
         nx.draw_networkx_labels(self.Tree, pos)
+
+        # patch_list = []
+        # for color in self.get_color_list(): 
+        #     patch = mpatches.Patch(color=mpl.colormaps['plasma'](color), label=f'Color {color}')
+        #     patch_list.append(patch)
+        #patch = mpatches.Patch(color=mpl.colormaps['plasma'](5), label=f'Color {2}')
+        #plt.legend(handles=[patch])
+        #plt.legend()
         plt.show()
 
-    
+    def get_fairness_vectors(self, delta=0): 
+
+        fairness_vectors = {'alpha': {}, 'beta': {}}
+
+        C = self.get_number_of_nodes()
+        colors = self.get_color_list()
+        node_colors = self.get_color_dict() 
+        for color in colors:
+            C_i = list(node_colors.values()).count(color)
+            r_i = C_i/C 
+            if delta != 0: 
+                fairness_vectors['beta'][color] = min(1, r_i/(1-delta))
+            else: 
+                fairness_vectors['beta'][color] = 1
+            fairness_vectors['alpha'][color] = r_i*(1-delta)       
+
+        return fairness_vectors   
+
+
 
 if __name__ == "__main__": 
 
     random_tree = RANDOMTREE(height=2, max_noc = 2, max_dist = 2, colors= 2)
+    print(random_tree.get_fairness_vectors(delta=0))
     random_tree.draw_tree()
+    

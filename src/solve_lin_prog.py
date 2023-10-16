@@ -125,6 +125,10 @@ class SOlVELINPROG:
 
     def get_info(self, x): 
 
+        if x is None: 
+            print("The problem is infeasible.")
+            return
+
         x = np.array(x)
         x = x.reshape((int(len(x)/self.n),self.n))
 
@@ -138,7 +142,7 @@ class SOlVELINPROG:
         for j in range(y.shape[0]): 
             for i in range(y.shape[1]):
                 if y[j][i] > 0: 
-                    print(f"Node {j} was assigned to center {i}")
+                    print(f"Node {j} was assigned to center {i} with probability {y[j][i]}.")
 
 
 
@@ -162,7 +166,10 @@ if __name__ == "__main__":
                 }
     
 
-    random_tree = RANDOMTREE(adj_list=adj_list, edge_weights=True)
-    solve_lin_prog = SOlVELINPROG(random_tree, 2, alpha = {1: 1/2, 2:1/2}, beta = {1: 1/2, 2:1/2})
+    random_tree = RANDOMTREE(4, 2, colors=2)
+    fv = random_tree.get_fairness_vectors(delta=0)
+    solve_lin_prog = SOlVELINPROG(random_tree, 3, alpha = fv['alpha'], beta = fv['beta'])
+    #print(solve_lin_prog.solve_prog())
     solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
+    #print(solve_lin_prog.solve_prog().x)
     random_tree.draw_tree()
