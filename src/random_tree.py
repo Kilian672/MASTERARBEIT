@@ -17,9 +17,8 @@ class RANDOMTREE:
         The maximum number of children for each node. 
     adj_list : dict
         An adjacency list to generate the Tree from. 
-    edge_weights : bool
-        If true, each edge will get (randomly generated) weights between 0 and 10. 
-        If false, the edges will be weighted equally with value 1. 
+    max_dist : int
+        Maximum distance from child to parent node. 
     colors : int
         The number of colors to use for the nodes. 
 
@@ -27,23 +26,25 @@ class RANDOMTREE:
     -------
     get_number_of_nodes()
         Return number of nodes in tree. 
+    get_color_dict()
+        Return dictionary where the keys are the nodes and the items are the colors of the nodes. 
+    get_color_list()
+        Return a list with unique colors. 
     get_number_of_colors()
         Return number of colors used to color the nodes.  
     get_dist_mat()
         Return a matrix that contains the weighted distances between node i and j for each i and j.  
     init_tree()
-        Helper function to initialize the tree from the adjacency matrix.
-    init_random_tree()
-        Helper function to initialize a randomly generated tree. 
+        Helper function to initialize the tree either from an adjacency matrix or randomly.
     create_random_tree()
-        Helper function to create a random tree as adjacency list. 
+        Helper function to recursively create a random tree as an adjacency matrix.  
     draw_tree()
         Draw tree.
 
     Examples
     -------
     Either create a RANDOMTREE object by giving it a height and the maximum number of children for each node 
-    or by giving it a adjacency matrix. You can also provide the adjacency matrix without colors. 
+    or by giving it an adjacency list. You can also provide the adjacency list without colors. 
     >>> random_tree = RANDOMTREE(height=4, max_noc=3, edge_weights=True, colors=2)
     >>> adj_list = {0: {"children": [1], "color": 2},
     ...             1: {"children": [2, 3], "color": 1}, 
@@ -51,18 +52,18 @@ class RANDOMTREE:
     ...             3: {"children": [], "color": 1}
     ...             }
     >>> random_tree = RANDOMTREE(adj_list=adj_list, edge_weights=True)
-
+    For further examples please see the README.md file. 
     """
 
     def __init__(self, height=1, max_noc=1, adj_list=None, edge_weights=True, max_dist=None, colors=None):
+            	
         self.height = height
         self.max_noc = max_noc 
         self.adj_list = adj_list
-        self.edge_weights = edge_weights
         self.max_dist = max_dist
         self.colors = colors
         
-        self.Tree = self.init_tree_new()
+        self.Tree = self.init_tree()
 
     def get_number_of_nodes(self): 
         """
@@ -101,7 +102,7 @@ class RANDOMTREE:
         -------
             np.array: weighted distances between nodes 
         """
-        
+        # Compute the distance between each nodes
         apd = dict(nx.all_pairs_dijkstra(self.Tree, weight="weight"))
         dim = len(apd.keys())
         dist_mat = np.zeros((dim, dim))
@@ -112,56 +113,10 @@ class RANDOMTREE:
         return dist_mat
     
     def init_tree(self): 
-        """
-        Helper function to initialize the tree from the adjacency matrix.
-
-        Returns
-        -------
-            A tree using nx.Graph() from networx module
-
-        """
-        tree_list = self.adj_list
-        G = nx.Graph()
-        for node in tree_list.keys():
-            G.add_node(node, color = tree_list[node].get("color", 1))
-            if tree_list[node]["children"] != []: 
-                for child in tree_list[node]["children"]: 
-                    if self.edge_weights: 
-                        G.add_edge(node, child, weight = random.randint(1,10))
-                    else: 
-                        G.add_edge(node, child, weight = 1)
-
-        return G
-
-    def init_random_tree(self): 
-        """
-        Helper function to initialize a randomly generated tree with weights.
-
-        Returns
-        -------
-            A tree using nx.Graph() from networx module
-
-        """
-        tree_list = self.create_random_tree(self.height, self.max_noc)[0]
-        G = nx.Graph()
-        for node in tree_list.keys():
-            if self.colors is None: 
-                G.add_node(node, color = 1)
-            else: 
-                colors = min(len(tree_list.keys()), self.colors)
-                G.add_node(node, color = random.randint(1, colors))
-            if tree_list[node] != []: 
-                for child in tree_list[node]: 
-                    if self.edge_weights: 
-                        G.add_edge(node, child, weight = random.randint(1,10))
-                    else: 
-                        G.add_edge(node, child, weight = 1)
-
-        return G
-    
-    def init_tree_new(self): 
+        """Helper function to initialize the tree either from an adjacency matrix or randomly."""
         
         if self.adj_list is None: 
+            # If there is no adjacency list we have to generate a random tree
             tree = self.create_random_tree(self.height, self.max_noc)[0]
         else: 
             tree = self.adj_list
@@ -248,9 +203,9 @@ class RANDOMTREE:
         nx.draw_networkx_edges(self.Tree, pos, arrows=False, label="weight")
 
         # add labels to edges 
-        if self.edge_weights: 
-            edge_labels = {(u_e, v_e): e_weight for u_e, v_e, e_weight in self.Tree.edges.data('weight')}
-            nx.draw_networkx_edge_labels(self.Tree, pos, edge_labels = edge_labels)
+         
+        edge_labels = {(u_e, v_e): e_weight for u_e, v_e, e_weight in self.Tree.edges.data('weight')}
+        nx.draw_networkx_edge_labels(self.Tree, pos, edge_labels = edge_labels)
 
         nx.draw_networkx_labels(self.Tree, pos)
         plt.show()
@@ -259,14 +214,5 @@ class RANDOMTREE:
 
 if __name__ == "__main__": 
 
-    adj_list = {0: {"children": [1], "color": 2, "dist_to_par": 112},
-                1: {"children": [2, 3], "color": 1, "dist_to_par": 10}, 
-                2: {"children": [], "dist_to_par": 112}, 
-                3: {"children": [], "color": 1}
-                }
-    
-    random_tree = RANDOMTREE(2, 2, colors=2, max_dist = 0.5)
-    print(random_tree.get_color_dict())
-    print(random_tree.Tree.nodes.data("color"))
-    random_tree.get_dist_mat() 
+    random_tree = RANDOMTREE(height=2, max_noc = 2, max_dist = 2, colors= 2)
     random_tree.draw_tree()
