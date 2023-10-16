@@ -54,16 +54,15 @@ class RANDOMTREE:
 
     """
 
-    def __init__(self, height=1, max_noc=1, adj_list=None, edge_weights=True, colors=None):
+    def __init__(self, height=1, max_noc=1, adj_list=None, edge_weights=True, max_dist=None, colors=None):
         self.height = height
         self.max_noc = max_noc 
         self.adj_list = adj_list
         self.edge_weights = edge_weights
+        self.max_dist = max_dist
         self.colors = colors
-        if self.adj_list is None: 
-            self.Tree = self.init_random_tree()
-        else: 
-            self.Tree = self.init_tree()
+        
+        self.Tree = self.init_tree_new()
 
     def get_number_of_nodes(self): 
         """
@@ -160,6 +159,48 @@ class RANDOMTREE:
 
         return G
     
+    def init_tree_new(self): 
+        
+        if self.adj_list is None: 
+            tree = self.create_random_tree(self.height, self.max_noc)[0]
+        else: 
+            tree = self.adj_list
+
+        T = nx.Graph()
+
+        for node in tree.keys(): 
+            
+            if self.adj_list is None: 
+                if self.colors is None: 
+                    T.add_node(node, color = 1)
+                else: 
+                    noc_ = min(len(tree.keys()), self.colors)
+                    T.add_node(node, color = random.randint(1, noc_))
+                children = tree[node]
+            else: 
+                if self.colors is None: 
+                    T.add_node(node, color = tree[node].get('color', 1))
+                else: 
+                    noc_ = min(len(tree.keys()), self.colors)
+                    T.add_node(node, color = tree[node].get('color', random.randint(1, noc_)))
+                children = tree[node]['children']
+            
+            
+            for child in children: 
+                if self.adj_list is None: 
+                    if self.max_dist is None: 
+                        T.add_edge(node, child, weight = 1)
+                    else: 
+                        T.add_edge(node, child, weight = random.randint(1, max(1, self.max_dist)))
+                else: 
+                    if self.max_dist is None: 
+                        T.add_edge(node, child, weight = tree[child].get('dist_to_par', 1))
+                    else: 
+                        T.add_edge(node, child, weight = 
+                                   tree[child].get('dist_to_par', random.randint(1, max(1, self.max_dist))))
+                
+        return T
+
     def create_random_tree(self, height, max_noc): 
 
         if height < 0: 
@@ -218,14 +259,14 @@ class RANDOMTREE:
 
 if __name__ == "__main__": 
 
-    adj_list = {0: {"children": [1], "color": 2},
-                1: {"children": [2, 3], "color": 1}, 
-                2: {"children": [], "color": 2}, 
+    adj_list = {0: {"children": [1], "color": 2, "dist_to_par": 112},
+                1: {"children": [2, 3], "color": 1, "dist_to_par": 10}, 
+                2: {"children": [], "dist_to_par": 112}, 
                 3: {"children": [], "color": 1}
                 }
     
-    random_tree = RANDOMTREE(height=2, max_noc=2, edge_weights=False, colors=2)
+    random_tree = RANDOMTREE(2, 2, colors=2, max_dist = 0.5)
     print(random_tree.get_color_dict())
     print(random_tree.Tree.nodes.data("color"))
     random_tree.get_dist_mat() 
-    #random_tree.draw_tree()
+    random_tree.draw_tree()
