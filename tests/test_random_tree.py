@@ -1,8 +1,8 @@
-# random_tree.py
+# test_random_tree.py
 
 import unittest
 from src.random_tree import RANDOMTREE
-# all entries within <> are placeholders
+
 
 class TestClass(unittest.TestCase):
 
@@ -59,10 +59,19 @@ class TestClass(unittest.TestCase):
         max_weight = max([e_weight for u_e, v_e, e_weight in rt.Tree.edges.data('weight')]) 
         self.assertEqual(max_weight, 1)   
 
+        # With colors and weights
+        rt = RANDOMTREE(5,3, max_dist=5, colors=5)
+        self.assertLessEqual(rt.get_number_of_nodes(), 364)
+        self.assertGreaterEqual(rt.get_number_of_nodes(), 6)   
+        max_weight = max([e_weight for u_e, v_e, e_weight in rt.Tree.edges.data('weight')]) 
+        self.assertLessEqual(max_weight, 5)
+        self.assertGreaterEqual(max_weight, 1)
+        self.assertLessEqual(rt.get_number_of_colors(), 5)
+
+    def test_dist_mat(self): 
+        pass
 
 
         
 		
 
-if __name__ == '__main__':
-    unittest.main()

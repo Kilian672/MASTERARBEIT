@@ -42,6 +42,10 @@ class RANDOMTREE:
         Helper function to recursively create a random tree as an adjacency matrix.  
     draw_tree()
         Draw tree.
+    get_fairness_vectors(delta=0)
+        Return a dictionary containing fairness vectors (also dictionaries) alpha and beta, where each entry c represents 
+        the relative amount of nodes with color c. The parameter delta can be used to relax the fairness 
+        constraints. 
 
     Examples
     -------
@@ -87,8 +91,6 @@ class RANDOMTREE:
         
         if self.max_dist < 1 or self.colors < 1: 
             raise Exception("Please provide only values greter then or equal to 1 for max_dist and colors")
-
-
 
     def get_number_of_nodes(self): 
         """
@@ -210,12 +212,12 @@ class RANDOMTREE:
         """
         pos = nx.spring_layout(self.Tree)
     
-        
+        # get node colors
         cols = [node[1] for node in self.Tree.nodes.data('color')]
         nx.draw_networkx_nodes(self.Tree, pos, node_size = 500, node_color = cols)
         nx.draw_networkx_edges(self.Tree, pos, arrows=False, label="weight")
 
-        # add labels to edges 
+        # add weight labels to edges 
         edge_labels = {(u_e, v_e): e_weight for u_e, v_e, e_weight in self.Tree.edges.data('weight')}
         nx.draw_networkx_edge_labels(self.Tree, pos, edge_labels = edge_labels)
 
@@ -224,15 +226,31 @@ class RANDOMTREE:
         plt.show()
 
     def get_fairness_vectors(self, delta=0): 
+        """
+        Return a dictionary containing fairness vectors (also dictionaries) alpha and beta, where each entry c represents 
+        the relative amount of nodes with color c. The parameter delta can be used to relax the fairness 
+        constraints.
 
+        Parameters
+        ----------
+            delta : int 
+                Between 0 and 1. Stands for how relaxed the fairness constraints are.  
+        Returns
+        -------
+            dict : a dictionary containg alpha_c and beta_c for each color c. 
+        """
+        
         fairness_vectors = {'alpha': {}, 'beta': {}}
 
         C = self.get_number_of_nodes()
         colors = self.get_color_list()
         node_colors = self.get_color_dict() 
         for color in colors:
+            # get number of nodes assigned to current color
             C_i = list(node_colors.values()).count(color)
+            # get relative value
             r_i = C_i/C 
+            # add lower and upper bounds for current color to dictionary
             if delta != 0: 
                 fairness_vectors['beta'][color] = min(1, r_i/(1-delta))
             else: 
@@ -252,8 +270,6 @@ if __name__ == "__main__":
                 }
 
     random_tree = RANDOMTREE(adj_list=adj_list)
-    #print(random_tree.get_fairness_vectors(delta=0))
-    #random_tree.draw_tree()
     random_tree.get_dist_mat()
     
     
