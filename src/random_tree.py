@@ -57,7 +57,7 @@ class RANDOMTREE:
     For further examples please see the README.md file. 
     """
 
-    def __init__(self, height=1, max_noc=1, adj_list=None, edge_weights=True, max_dist=None, colors=None):
+    def __init__(self, height=1, max_noc=1, adj_list=None, max_dist=1, colors=1):
             	
         self.height = height
         self.max_noc = max_noc 
@@ -65,7 +65,30 @@ class RANDOMTREE:
         self.max_dist = max_dist
         self.colors = colors
         
+        try: 
+            self.__check_input()
+        except Exception as e: 
+            print("An error occurred", e)
+            return
+        
         self.Tree = self.init_tree()
+
+    def __check_input(self):
+
+
+        if not isinstance(self.height, int) or not isinstance(self.max_noc, int): 
+            raise Exception("Wrong datatype for height or max_noc! Please provide integers.")
+        
+        if not isinstance(self.colors, int): 
+            raise Exception("Wrong datatype for colors! Please provide integers.")
+        
+        if self.height < 0 or self.max_noc < 1: 
+            raise Exception("Please provide only values greater then or equal to 0 for height and 1 for max_noc.")
+        
+        if self.max_dist < 1 or self.colors < 1: 
+            raise Exception("Please provide only values greter then or equal to 1 for max_dist and colors")
+
+
 
     def get_number_of_nodes(self): 
         """
@@ -127,34 +150,22 @@ class RANDOMTREE:
 
         for node in tree.keys(): 
             
-            if self.adj_list is None: 
-                if self.colors is None: 
-                    T.add_node(node, color = 1)
-                else: 
-                    noc_ = min(len(tree.keys()), self.colors)
-                    T.add_node(node, color = random.randint(1, noc_))
+            if self.adj_list is None:  
+                noc_ = min(len(tree.keys()), self.colors)
+                T.add_node(node, color = random.randint(1, noc_))
                 children = tree[node]
             else: 
-                if self.colors is None: 
-                    T.add_node(node, color = tree[node].get('color', 1))
-                else: 
-                    noc_ = min(len(tree.keys()), self.colors)
-                    T.add_node(node, color = tree[node].get('color', random.randint(1, noc_)))
+                noc_ = min(len(tree.keys()), self.colors)
+                T.add_node(node, color = tree[node].get('color', random.randint(1, noc_)))
                 children = tree[node]['children']
             
             
             for child in children: 
-                if self.adj_list is None: 
-                    if self.max_dist is None: 
-                        T.add_edge(node, child, weight = 1)
-                    else: 
-                        T.add_edge(node, child, weight = random.randint(1, max(1, self.max_dist)))
+                if self.adj_list is None:  
+                    T.add_edge(node, child, weight = random.randint(1, max(1, self.max_dist)))
                 else: 
-                    if self.max_dist is None: 
-                        T.add_edge(node, child, weight = tree[child].get('dist_to_par', 1))
-                    else: 
-                        T.add_edge(node, child, weight = 
-                                   tree[child].get('dist_to_par', random.randint(1, max(1, self.max_dist))))
+                    T.add_edge(node, child, weight = 
+                               tree[child].get('dist_to_par', random.randint(1, max(1, self.max_dist))))
                 
         return T
 
@@ -164,7 +175,7 @@ class RANDOMTREE:
             return None 
         
         if height == 0: 
-            return {0: []} 
+            return [{0: []}, []] 
         
         if height == 1:
             random_list = list(range(1, 1+random.randint(1,max_noc)))
@@ -205,19 +216,11 @@ class RANDOMTREE:
         nx.draw_networkx_edges(self.Tree, pos, arrows=False, label="weight")
 
         # add labels to edges 
-         
         edge_labels = {(u_e, v_e): e_weight for u_e, v_e, e_weight in self.Tree.edges.data('weight')}
         nx.draw_networkx_edge_labels(self.Tree, pos, edge_labels = edge_labels)
 
         nx.draw_networkx_labels(self.Tree, pos)
 
-        # patch_list = []
-        # for color in self.get_color_list(): 
-        #     patch = mpatches.Patch(color=mpl.colormaps['plasma'](color), label=f'Color {color}')
-        #     patch_list.append(patch)
-        #patch = mpatches.Patch(color=mpl.colormaps['plasma'](5), label=f'Color {2}')
-        #plt.legend(handles=[patch])
-        #plt.legend()
         plt.show()
 
     def get_fairness_vectors(self, delta=0): 
@@ -242,7 +245,15 @@ class RANDOMTREE:
 
 if __name__ == "__main__": 
 
-    random_tree = RANDOMTREE(height=2, max_noc = 2, max_dist = 2, colors= 2)
-    print(random_tree.get_fairness_vectors(delta=0))
-    random_tree.draw_tree()
+    adj_list = { 
+                1: {"children": [2,3]}, 
+                2: {"children": []}, 
+                3: {"children": []}
+                }
+
+    random_tree = RANDOMTREE(adj_list=adj_list)
+    #print(random_tree.get_fairness_vectors(delta=0))
+    #random_tree.draw_tree()
+    random_tree.get_dist_mat()
+    
     
