@@ -159,7 +159,7 @@ class RANDOMTREE:
             else: 
                 noc_ = min(len(tree.keys()), self.colors)
                 T.add_node(node, color = tree[node].get('color', random.randint(1, noc_)))
-                children = tree[node]['children']
+                children = tree[node].get('children', [])
             
             
             for child in children: 
@@ -251,7 +251,7 @@ class RANDOMTREE:
             # get relative value
             r_i = C_i/C 
             # add lower and upper bounds for current color to dictionary
-            if delta != 0: 
+            if delta != 1: 
                 fairness_vectors['beta'][color] = min(1, r_i/(1-delta))
             else: 
                 fairness_vectors['beta'][color] = 1

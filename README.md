@@ -19,28 +19,35 @@ if __name__ == "__main__":
 You can also create a RANDOMTREE object using an adjacency list. The code snippet below shows how such a list should look like. 
 
 ```python
-adj_list = { 
-                0: {"children": [1,2], "color": 1} 
-                1: {"children": [3], "color": 2, "dist_to_par": 2}, 
-                2: {"children": []}, 
-                3: {"children": [], "color": 1}
-            }
+    adj_list = { 
+                        0: {"children": [1,2], "color": 1}, 
+                        1: {"children": [3], "color": 2, "dist_to_par": 2}, 
+                        2: {"children": []}, 
+                        3: {"children": [], "color": 1}
+                }
 ```
-The "dist_to_par" key stands for the distance of the node to its parent node. The "color" key stands for the color you want to assign to the node (Color 1, Color 2, Color 3, ...). Please make sure to use only colors greater then or equal to 1. The more numbers you provide the more colors you get. The "children" key stands for the children of the node. Please provide a list containing the indices of the nodes you want to assign to the node as children. As you can see in the example it is not necessary to always provide a color or a distance to the parent. Missing information will be filled by default values (the default for "color" is 1 and the default for "dist_to_par" is also 1). If you provide values for "max_dist" or "colors" parameter while defining a new object of the RANDOMTREE class, missing information will be filled randomly. 
+* **color** = color you want to assign to the node, i.e. Color 1 or Color 2 or Color 3 ... . Please make sure to use only colors greater then or equal to 1. The more numbers you provide the more colors (or groups) you get.
+* **dist_to_par** = distance of the node to its parent node
+
+* **children** = list of all the nodes who are children of the node
+ 
+As you can see in the example above it is not necessary to always provide a color or a distance to the parent node. Missing information will be filled with default values (the default for **color** is 1 and the default for **dist_to_par** is also 1). If you provide values for the **max_dist** or **colors** parameter while initializing a new object of the RANDOMTREE class, missing information will be filled randomly. 
 A complete example for the initialization of a RANDOMTREE object via adjacency list could look like this: 
 ```python
 if __name__ == "__main__": 
 
     adj_list = { 
-                    0: {"children": [1,2], "color": 1} 
-                    1: {"children": [3], "color": 2, "dist_to_par": 2}, 
-                    2: {"children": []}, 
-                    3: {"children": [], "color": 1}
+                        0: {"children": [1,2], "color": 1}, 
+                        1: {"children": [3], "color": 2, "dist_to_par": 2}, 
+                        2: {"children": []}, 
+                        3: {"children": [], "color": 1}
                 }
 
     random_tree = RANDOMTREE(adj_list=adj_list, max_dist = 2, colors= 2)
     random_tree.draw_tree()
 ``` 
+> **_NOTE:_**  If you don't provide a **children** key for one node the code will assume, that the node is a leave.
+
 
 ## Solve Linear Programm
 

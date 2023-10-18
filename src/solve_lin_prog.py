@@ -10,6 +10,35 @@ except:
 np.set_printoptions(threshold=sys.maxsize, linewidth=200)
 
 class SOlVELINPROG: 
+    """
+    This class is used to solve a specific class of Linear Programms given by a RANDOMTREE object.
+    For further information see README.md.  
+
+    Attributes
+    ----------
+    random_tree : RANDOMTREE
+        A RANDOMTREE object from which the LP is build. 
+    k : int
+        Number of centers. 
+    alpha : dict
+        A dictionary containing the fairness vector alpha. 
+    beta : dict
+        A dictionary containing the fairness vector beta.  
+
+    Methods
+    -------
+    c()
+        Compute the c vector for the objective function (min c^T*z).  
+    b()
+        Compute the vector b (Az <= b). 
+    A()
+        Compute matrix A (Az <= b). 
+    solve_prog()
+        Solve the linear program (min c^T*z, Az <= b).  
+    get_info()
+        Print which nodes are centers and the assignment of nodes to centers.    
+      
+    """
 
     def __init__(self, random_tree, k, alpha, beta): 
     
@@ -167,11 +196,15 @@ if __name__ == "__main__":
                 12: {"children": [], "color": 2}, 
                 13: {"children": [], "color": 2}
                 }
-    
-
-    random_tree = RANDOMTREE(2, 2, colors=2)
-    fv = random_tree.get_fairness_vectors(delta=0)
-    solve_lin_prog = SOlVELINPROG(random_tree, 2, alpha = fv['alpha'], beta = fv['beta'])
-    print(solve_lin_prog.A())
+    adj_list = {0: {"children": [1, 2, 3], "color": 1}, 
+                    1: {"color": 1}, 
+                    2: {"color": 2}, 
+                    3: {"color": 2},}
+    # initialize RANDOMTREE object 
+    random_tree = RANDOMTREE(adj_list = adj_list)
+    # get alpha and beta vectors
+    fv = random_tree.get_fairness_vectors()
+    solve_lin_prog = SOlVELINPROG(random_tree, 1, alpha = fv['alpha'], beta = fv['beta'])
     solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
+    print(solve_lin_prog.A())
     random_tree.draw_tree()
