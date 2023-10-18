@@ -26,4 +26,7 @@ class TestClass(unittest.TestCase):
                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0, 0, 0])
         
-        self.assertEqual(b, b_)
+        self.assertEqual(len(b), len(b_))
+        for i in range(len(b)): 
+            self.assertEqual(b[i], b_[i])
+        

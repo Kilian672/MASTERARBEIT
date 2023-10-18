@@ -1,7 +1,10 @@
 import sys
 import numpy as np
 from scipy.optimize import linprog
-from src.random_tree import RANDOMTREE
+try: 
+    from src.random_tree import RANDOMTREE
+except: 
+    from random_tree import RANDOMTREE
 
 
 np.set_printoptions(threshold=sys.maxsize, linewidth=200)
@@ -9,7 +12,7 @@ np.set_printoptions(threshold=sys.maxsize, linewidth=200)
 class SOlVELINPROG: 
 
     def __init__(self, random_tree, k, alpha, beta): 
-        # TODO: Check if alpha and beta have correct length
+    
         self.random_tree = random_tree
         self.k = k 
         self.alpha = alpha
@@ -166,10 +169,9 @@ if __name__ == "__main__":
                 }
     
 
-    random_tree = RANDOMTREE(4, 2, colors=2)
+    random_tree = RANDOMTREE(2, 2, colors=2)
     fv = random_tree.get_fairness_vectors(delta=0)
-    solve_lin_prog = SOlVELINPROG(random_tree, 3, alpha = fv['alpha'], beta = fv['beta'])
-    #print(solve_lin_prog.solve_prog())
+    solve_lin_prog = SOlVELINPROG(random_tree, 2, alpha = fv['alpha'], beta = fv['beta'])
+    print(solve_lin_prog.A())
     solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
-    #print(solve_lin_prog.solve_prog().x)
     random_tree.draw_tree()

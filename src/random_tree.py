@@ -264,12 +264,13 @@ class RANDOMTREE:
 if __name__ == "__main__": 
 
     adj_list = { 
-                1: {"children": [2,3]}, 
-                2: {"children": []}, 
-                3: {"children": []}
+                    0: {"children": [1,2], "color": 1}, 
+                    1: {"children": [3], "color": 2, "dist_to_par": 2}, 
+                    2: {"children": []}, 
+                    3: {"children": [], "color": 1}
                 }
 
-    random_tree = RANDOMTREE(adj_list=adj_list)
-    random_tree.get_dist_mat()
+    random_tree = RANDOMTREE(adj_list=adj_list, max_dist = 2, colors= 2)
+    random_tree.draw_tree()
     
     
