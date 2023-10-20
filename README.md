@@ -50,4 +50,8 @@ if __name__ == "__main__":
 
 
 ## Solve Linear Programm
+In the following we will explain how we can use the SOLVELINPROG class to set up and solve the following LP associated to a RANDOMTREE object: 
+
+![LP1](/images/LP1.png)
+
 
