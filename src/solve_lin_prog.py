@@ -201,10 +201,12 @@ if __name__ == "__main__":
                     2: {"color": 2}, 
                     3: {"color": 2},}
     # initialize RANDOMTREE object 
-    random_tree = RANDOMTREE(adj_list = adj_list)
-    # get alpha and beta vectors
+    random_tree = RANDOMTREE(2, 3, colors=2)
+    # get fairness vectors
     fv = random_tree.get_fairness_vectors()
+    # initialize SOLVELINPROG object to solve LP
     solve_lin_prog = SOlVELINPROG(random_tree, 1, alpha = fv['alpha'], beta = fv['beta'])
+    # Solve LP and get information about assignment
     solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
-    print(solve_lin_prog.A())
+    # Draw random tree
     random_tree.draw_tree()

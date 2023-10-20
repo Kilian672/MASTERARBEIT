@@ -45,7 +45,7 @@ class RANDOMTREE:
     get_fairness_vectors(delta=0)
         Return a dictionary containing fairness vectors (also dictionaries) alpha and beta, where each entry c represents 
         the relative amount of nodes with color c. The parameter delta can be used to relax the fairness 
-        constraints. 
+        constraints. Alpha is the lower bound and beta is the upper bound.
 
     Examples
     -------
@@ -229,7 +229,7 @@ class RANDOMTREE:
         """
         Return a dictionary containing fairness vectors (also dictionaries) alpha and beta, where each entry c represents 
         the relative amount of nodes with color c. The parameter delta can be used to relax the fairness 
-        constraints.
+        constraints. Alpha is the lower bound and beta is the upper bound. 
 
         Parameters
         ----------
