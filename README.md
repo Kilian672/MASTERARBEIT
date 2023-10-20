@@ -1,6 +1,17 @@
 # MASTERARBEIT
 Project to store all the code for the Algorithms used while doing research for my master thesis. 
 
+## How to use
+1. Clone project from github repository: https://github.com/Kilian672/MASTERARBEIT.git
+2. Checkout branch with 
+```
+git checkout -b feature/test 
+```
+3. Install packages 
+```python
+pip install -r requirements.txt
+```
+4. open solve_lin_prog.py and run file
 ## Create Random Tree
 In this section we will explain how to initialize an object of  the RANDOMTREE class. The RANDOMTREE class is used to generate random samples of a tree. There are different options to either color the nodes or to add edge weights. Also one can initialize a deterministict tree by simply providing an adjacency list for the nodes. The RANDOMTREE class has several usefull functions such as a function to visualize the tree. In the following we will give examples on how to create a RANDOMTREE object and how to visualize it. 
 
