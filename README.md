@@ -52,7 +52,6 @@ if __name__ == "__main__":
 ## Solve Linear Programm
 In the following we will explain how we can use the SOLVELINPROG class to set up and solve the following LP associated to a RANDOMTREE object: 
 
-
 ![LP1](/img/LP1.jpg "Optionaler Titel")
 
 
@@ -71,5 +70,36 @@ In the following we will explain how we can use the SOLVELINPROG class to set up
 3. Now we can use the fairness vectors calculated above to create a SOLVELINPROG object. The code is as follows
 ```python
     # initialize SOLVELINPROG object to solve LP
-    solve_lin_prog = SOlVELINPROG(random_tree = random_tree, k = 1, alpha = fv['alpha'], beta = fv['beta'])
+    solve_lin_prog = SOlVELINPROG(random_tree, k=2, alpha = fv['alpha'], beta = fv['beta'])
+```
+* **random_tree**: the RANDOMTREE object calculated above
+* **k**: number of centers to calculate
+* **alpha**: the alpha fairness vector calculated above
+* **beta**: the beta fairness vector calculated above
+
+4. Finally the only thing left is to calculate our result and visualize it. 
+The code is as follows
+```python
+    # Solve LP and get information about assignment
+    solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
+    # Draw random tree
+    random_tree.draw_tree()
+```
+This will calculate the result of the above mentioned LP for the RANDOMTREE object and print it to the console. Also this will visualize the tree with its colors. 
+
+The complete example looks like this: 
+```python
+if __name__ == "__main__":
+    
+    # initialize RANDOMTREE object 
+    random_tree = RANDOMTREE(2, 3, colors=2)
+    # get fairness vectors
+    fv = random_tree.get_fairness_vectors()
+    # initialize SOLVELINPROG object to solve LP
+    solve_lin_prog = SOlVELINPROG(random_tree, k=2, alpha = fv['alpha'], beta = fv['beta'])
+    # Solve LP and get information about assignment
+    solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
+    # Draw random tree
+    random_tree.draw_tree()
+
 ```

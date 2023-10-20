@@ -181,6 +181,7 @@ class SOlVELINPROG:
 
 if __name__ == "__main__":
     
+    # This adjacency list can also be used for the RANDOMTREE class
     adj_list = {0: {"children": [1, 2, 3, 4, 5, 6, 7], "color": 1},
                 1: {"children": [8, 9, 10, 11, 12, 13], "color": 2}, 
                 2: {"children": [], "color": 1}, 
@@ -196,10 +197,8 @@ if __name__ == "__main__":
                 12: {"children": [], "color": 2}, 
                 13: {"children": [], "color": 2}
                 }
-    adj_list = {0: {"children": [1, 2, 3], "color": 1}, 
-                    1: {"color": 1}, 
-                    2: {"color": 2}, 
-                    3: {"color": 2},}
+    
+
     # initialize RANDOMTREE object 
     random_tree = RANDOMTREE(2, 3, colors=2)
     # get fairness vectors
