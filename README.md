@@ -52,6 +52,24 @@ if __name__ == "__main__":
 ## Solve Linear Programm
 In the following we will explain how we can use the SOLVELINPROG class to set up and solve the following LP associated to a RANDOMTREE object: 
 
-![LP1](/images/LP1.png)
+
+![LP1](/img/LP1.jpg "Optionaler Titel")
 
 
+1. First we have to create another RANDOMTREE object by either providing an adjacency list or by providing a height and a maximal number of children for each node. Additionaly we can provide the number of colors to generate and the maximal distance from a node to its parent. The code is shown below.
+```python
+    # initialize RANDOMTREE object 
+    random_tree = RANDOMTREE(2, 3, colors=2)
+```
+2. Now we have to get the fairness vectors from the RANDOMTREE class. For this we can call the get_fairnees_vectors() method from the RANDOMTREE class as shown below. The $\alpha_c$ and $\beta_c$ values will be choosen according to the relative amout of nodes colored with color c. We will see in step 3. how to use the fairness vectors.
+```python
+    # get fairness vectors
+    fv = random_tree.get_fairness_vectors()
+```
+> **_NOTE:_**  The get_fairness_vectors() method can also take a parameter $\delta$ between 0 and 1 which stands for how relaxed the fairness constraints should be. 
+
+3. Now we can use the fairness vectors calculated above to create a SOLVELINPROG object. The code is as follows
+```python
+    # initialize SOLVELINPROG object to solve LP
+    solve_lin_prog = SOlVELINPROG(random_tree = random_tree, k = 1, alpha = fv['alpha'], beta = fv['beta'])
+```

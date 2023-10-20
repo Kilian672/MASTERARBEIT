@@ -205,7 +205,7 @@ if __name__ == "__main__":
     # get fairness vectors
     fv = random_tree.get_fairness_vectors()
     # initialize SOLVELINPROG object to solve LP
-    solve_lin_prog = SOlVELINPROG(random_tree, 1, alpha = fv['alpha'], beta = fv['beta'])
+    solve_lin_prog = SOlVELINPROG(random_tree, k=1, alpha = fv['alpha'], beta = fv['beta'])
     # Solve LP and get information about assignment
     solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
     # Draw random tree
