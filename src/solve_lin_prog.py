@@ -184,27 +184,27 @@ if __name__ == "__main__":
     # This adjacency list can also be used for the RANDOMTREE class
     adj_list = {0: {"children": [1, 2, 3, 4, 5, 6, 7], "color": 1},
                 1: {"children": [8, 9, 10, 11, 12, 13], "color": 2}, 
-                2: {"children": [], "color": 1}, 
-                3: {"children": [], "color": 1}, 
-                4: {"children": [], "color": 1}, 
-                5: {"children": [], "color": 1}, 
-                6: {"children": [], "color": 1}, 
-                7: {"children": [], "color": 1},  
-                8: {"children": [], "color": 2}, 
-                9: {"children": [], "color": 2}, 
-                10: {"children": [], "color": 2}, 
-                11: {"children": [], "color": 2 }, 
-                12: {"children": [], "color": 2}, 
-                13: {"children": [], "color": 2}
+                2: {"color": 1}, 
+                3: {"color": 1}, 
+                4: {"color": 1}, 
+                5: {"color": 1}, 
+                6: {"color": 1}, 
+                7: {"color": 1},  
+                8: {"color": 2}, 
+                9: {"color": 2}, 
+                10: {"color": 2}, 
+                11: {"color": 2 }, 
+                12: {"color": 2}, 
+                13: {"color": 2}
                 }
     
 
     # initialize RANDOMTREE object 
-    random_tree = RANDOMTREE(2, 3, colors=2)
+    random_tree = RANDOMTREE(adj_list=adj_list, colors=3, max_dist=3)
     # get fairness vectors
     fv = random_tree.get_fairness_vectors()
     # initialize SOLVELINPROG object to solve LP
-    solve_lin_prog = SOlVELINPROG(random_tree, k=1, alpha = fv['alpha'], beta = fv['beta'])
+    solve_lin_prog = SOlVELINPROG(random_tree, k=2, alpha = fv['alpha'], beta = fv['beta'])
     # Solve LP and get information about assignment
     solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
     # Draw random tree
