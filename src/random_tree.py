@@ -72,8 +72,8 @@ class RANDOMTREE:
         try: 
             self.__check_input()
         except Exception as e: 
-            print("An error occurred", e)
-            return
+            print("An error occurred!", e)
+            return None
         
         self.Tree = self.init_tree()
 
@@ -100,15 +100,23 @@ class RANDOMTREE:
         -------
             int: number of nodes in Tree 
         """
-        return len(self.Tree.nodes)
+        try: 
+            return len(self.Tree.nodes)
+        except Exception as e: 
+            print(e)
     
     def get_color_dict(self): 
+        try: 
+            return {node[0]: node[1] for node in self.Tree.nodes.data("color")}
+        except Exception as e: 
+            print(e)
 
-        return {node[0]: node[1] for node in self.Tree.nodes.data("color")}
-    
     def get_color_list(self): 
 
-        return list(set([node[1] for node in self.Tree.nodes.data("color")]))
+        try: 
+            return list(set([node[1] for node in self.Tree.nodes.data("color")]))
+        except Exception as e: 
+            print(e)
 
     def get_number_of_colors(self):
         """
@@ -118,8 +126,10 @@ class RANDOMTREE:
         -------
             int: number of colors
         """
-        
-        return len(self.get_color_list())
+        try: 
+            return len(self.get_color_list())
+        except Exception as e: 
+            print(e)
 
     def get_dist_mat(self): 
         """
@@ -129,79 +139,87 @@ class RANDOMTREE:
         -------
             np.array: weighted distances between nodes 
         """
-        # Compute the distance between each nodes
-        apd = dict(nx.all_pairs_dijkstra(self.Tree, weight="weight"))
-        dim = len(apd.keys())
-        dist_mat = np.zeros((dim, dim))
-        for i in apd.keys(): 
-            for j in apd[i][0].keys(): 
-                dist_mat[i][j] = apd[i][0][j]
-    
-        return dist_mat
+        try: 
+            # Compute the distance between each nodes
+            apd = dict(nx.all_pairs_dijkstra(self.Tree, weight="weight"))
+            dim = len(apd.keys())
+            dist_mat = np.zeros((dim, dim))
+            for i in apd.keys(): 
+                for j in apd[i][0].keys(): 
+                    dist_mat[i][j] = apd[i][0][j]
+        
+            return dist_mat
+        except Exception as e: 
+            print(e)
     
     def init_tree(self): 
         """Helper function to initialize the tree either from an adjacency matrix or randomly."""
-        
-        if self.adj_list is None: 
-            # If there is no adjacency list we have to generate a random tree
-            tree = self.create_random_tree(self.height, self.max_noc)[0]
-        else: 
-            tree = self.adj_list
-
-        T = nx.Graph()
-
-        for node in tree.keys(): 
-            
-            if self.adj_list is None:  
-                noc_ = min(len(tree.keys()), self.colors)
-                T.add_node(node, color = random.randint(1, noc_))
-                children = tree[node]
+        try: 
+            if self.adj_list is None: 
+                # If there is no adjacency list we have to generate a random tree
+                tree = self.create_random_tree(self.height, self.max_noc)[0]
             else: 
-                noc_ = min(len(tree.keys()), self.colors)
-                T.add_node(node, color = tree[node].get('color', random.randint(1, noc_)))
-                children = tree[node].get('children', [])
-            
-            
-            for child in children: 
-                if self.adj_list is None:  
-                    T.add_edge(node, child, weight = random.randint(1, max(1, self.max_dist)))
-                else: 
-                    T.add_edge(node, child, weight = 
-                               tree[child].get('dist_to_par', random.randint(1, max(1, self.max_dist))))
+                tree = self.adj_list
+
+            T = nx.Graph()
+
+            for node in tree.keys(): 
                 
-        return T
+                if self.adj_list is None:  
+                    noc_ = min(len(tree.keys()), self.colors)
+                    T.add_node(node, color = random.randint(1, noc_))
+                    children = tree[node]
+                else: 
+                    noc_ = min(len(tree.keys()), self.colors)
+                    T.add_node(node, color = tree[node].get('color', random.randint(1, noc_)))
+                    children = tree[node].get('children', [])
+                
+                
+                for child in children: 
+                    if self.adj_list is None:  
+                        T.add_edge(node, child, weight = random.randint(1, max(1, self.max_dist)))
+                    else: 
+                        T.add_edge(node, child, weight = 
+                                tree[child].get('dist_to_par', random.randint(1, max(1, self.max_dist))))
+                    
+            return T
+        except Exception as e: 
+            print(e)
 
     def create_random_tree(self, height, max_noc): 
 
-        if height < 0: 
-            return None 
-        
-        if height == 0: 
-            return [{0: []}, []] 
-        
-        if height == 1:
-            random_list = list(range(1, 1+random.randint(1,max_noc)))
-            tree = {0: random_list}
-            for index in random_list: 
-                tree[index] = []
-            return [tree, random_list]
-        else:
-            tree_info = self.create_random_tree(height-1, max_noc)
-            tree = tree_info[0]
-            current_nodes = tree_info[1]
-            max_index = max(tree.keys())
-            new_nodes = []
+        try: 
+            if height < 0: 
+                return None 
+            
+            if height == 0: 
+                return [{0: []}, []] 
+            
+            if height == 1:
+                random_list = list(range(1, 1+random.randint(1,max_noc)))
+                tree = {0: random_list}
+                for index in random_list: 
+                    tree[index] = []
+                return [tree, random_list]
+            else:
+                tree_info = self.create_random_tree(height-1, max_noc)
+                tree = tree_info[0]
+                current_nodes = tree_info[1]
+                max_index = max(tree.keys())
+                new_nodes = []
 
-            while new_nodes == []: 
-                for node in current_nodes: 
-                    max_index = max(tree.keys())
-                    random_list = list(range(max_index+1, max_index+1+random.randint(1,max_noc)))
-                    tree[node] = random_list
-                    for index in random_list: 
-                        tree[index] = []
-                        new_nodes.append(index)
+                while new_nodes == []: 
+                    for node in current_nodes: 
+                        max_index = max(tree.keys())
+                        random_list = list(range(max_index+1, max_index+1+random.randint(1,max_noc)))
+                        tree[node] = random_list
+                        for index in random_list: 
+                            tree[index] = []
+                            new_nodes.append(index)
 
-            return [tree, new_nodes]
+                return [tree, new_nodes]
+        except Exception as e: 
+            print(e)
     
     def draw_tree(self): 
         """
@@ -239,40 +257,33 @@ class RANDOMTREE:
         -------
             dict : a dictionary containg alpha_c and beta_c for each color c. 
         """
-        
-        fairness_vectors = {'alpha': {}, 'beta': {}}
+        try: 
+            fairness_vectors = {'alpha': {}, 'beta': {}}
 
-        C = self.get_number_of_nodes()
-        colors = self.get_color_list()
-        node_colors = self.get_color_dict() 
-        for color in colors:
-            # get number of nodes assigned to current color
-            C_i = list(node_colors.values()).count(color)
-            # get relative value
-            r_i = C_i/C 
-            # add lower and upper bounds for current color to dictionary
-            if delta != 1: 
-                fairness_vectors['beta'][color] = min(1, r_i/(1-delta))
-            else: 
-                fairness_vectors['beta'][color] = 1
-            fairness_vectors['alpha'][color] = r_i*(1-delta)       
+            C = self.get_number_of_nodes()
+            colors = self.get_color_list()
+            node_colors = self.get_color_dict() 
+            for color in colors:
+                # get number of nodes assigned to current color
+                C_i = list(node_colors.values()).count(color)
+                # get relative value
+                r_i = C_i/C 
+                # add lower and upper bounds for current color to dictionary
+                if delta != 1: 
+                    fairness_vectors['beta'][color] = min(1, r_i/(1-delta))
+                else: 
+                    fairness_vectors['beta'][color] = 1
+                fairness_vectors['alpha'][color] = r_i*(1-delta)       
 
-        return fairness_vectors   
+            return fairness_vectors   
+        except Exception as e: 
+            print(e)
 
 
 
 if __name__ == "__main__": 
 
-    # initialize adjacency list 
-    adj_list = { 
-                    0: {"children": [1,2], "color": 1}, 
-                    1: {"children": [3], "color": 2, "dist_to_par": 2}, 
-                    2: {"children": []}, 
-                    3: {"children": [], "color": 1}
-                }
-    # initialize RANDOMTREE object
-    random_tree = RANDOMTREE(adj_list=adj_list, max_dist = 2, colors= 2)
-    # draw tree
+    random_tree = RANDOMTREE(height=2, max_noc = 2, max_dist = 2, colors= 2)
     random_tree.draw_tree()
     
     
