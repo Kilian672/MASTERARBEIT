@@ -200,7 +200,7 @@ if __name__ == "__main__":
     
 
     # initialize RANDOMTREE object 
-    random_tree = RANDOMTREE(adj_list=adj_list, colors=3, max_dist=3)
+    random_tree = RANDOMTREE(2, 3, colors=2)
     # get fairness vectors
     fv = random_tree.get_fairness_vectors()
     # initialize SOLVELINPROG object to solve LP

@@ -283,16 +283,7 @@ class RANDOMTREE:
 
 if __name__ == "__main__": 
 
-    # initialize adjacency list 
-    adj_list = { 
-                    0: {"children": [1,2], "color": 1}, 
-                    1: {"children": [3], "color": 2, "dist_to_par": 2}, 
-                    2: {"children": []}, 
-                    3: {"children": [], "color": 1}
-                }
-    # initialize RANDOMTREE object
-    random_tree = RANDOMTREE(2, 3, max_dist = 7, colors= 3)
-    # draw tree
+    random_tree = RANDOMTREE(height=2, max_noc = 2, max_dist = 2, colors= 2)
     random_tree.draw_tree()
     
     
