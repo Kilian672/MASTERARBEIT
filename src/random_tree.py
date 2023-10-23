@@ -283,7 +283,7 @@ class RANDOMTREE:
 
 if __name__ == "__main__": 
 
-    random_tree = RANDOMTREE(height=2, max_noc = 2, max_dist = 2, colors= 2)
+    random_tree = RANDOMTREE(height=10, max_noc = 2, max_dist = 10, colors= 5)
     random_tree.draw_tree()
     
     
