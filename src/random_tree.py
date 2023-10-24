@@ -228,11 +228,12 @@ class RANDOMTREE:
         -------
             None
         """
+        fig, ax = plt.subplots()
         pos = nx.spring_layout(self.Tree)
     
         # get node colors
         cols = [node[1] for node in self.Tree.nodes.data('color')]
-        nx.draw_networkx_nodes(self.Tree, pos, node_size = 500, node_color = cols)
+        nx.draw_networkx_nodes(self.Tree, pos, node_size = 500, node_color = cols, ax=ax)
         nx.draw_networkx_edges(self.Tree, pos, arrows=False, label="weight")
 
         # add weight labels to edges 
@@ -241,7 +242,8 @@ class RANDOMTREE:
 
         nx.draw_networkx_labels(self.Tree, pos)
 
-        plt.show()
+        return fig
+        #plt.show()
 
     def get_fairness_vectors(self, delta=0): 
         """
