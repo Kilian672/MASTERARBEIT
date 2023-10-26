@@ -7,7 +7,7 @@ except:
     from random_tree import RANDOMTREE
 
 
-np.set_printoptions(threshold=sys.maxsize, linewidth=200)
+np.set_printoptions(threshold=sys.maxsize, linewidth=1000)
 
 class SOlVELINPROG: 
     """
@@ -157,8 +157,11 @@ class SOlVELINPROG:
 
     def get_info(self, x): 
 
+        solution_string = ""
+
         if x is None: 
             print("The problem is infeasible.")
+            solution_string = solution_string + "The problem is infeasible."
             return
 
         x = np.array(x)
@@ -167,16 +170,19 @@ class SOlVELINPROG:
         for j in range(len(x[0])): 
             if x[0][j] > 0: 
                 print(f"Node {j} is a center")
+                solution_string = solution_string + f"Node {j} is a center\n"
 
         print("-----------------------------------------------------")
+        solution_string = solution_string + "-----------------------------------------------------\n"
 
         y = x[1:]
         for j in range(y.shape[0]): 
             for i in range(y.shape[1]):
                 if y[j][i] > 0: 
                     print(f"Node {j} was assigned to center {i} with probability {y[j][i]}.")
+                    solution_string = solution_string + f"Node {j} was assigned to center {i} with probability {y[j][i]}.\n"
 
-
+        return solution_string
 
 
 if __name__ == "__main__":
@@ -206,6 +212,7 @@ if __name__ == "__main__":
     # initialize SOLVELINPROG object to solve LP
     solve_lin_prog = SOlVELINPROG(random_tree, k=2, alpha = fv['alpha'], beta = fv['beta'])
     # Solve LP and get information about assignment
-    solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
+    res = solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
+    print(res)
     # Draw random tree
     random_tree.draw_tree()

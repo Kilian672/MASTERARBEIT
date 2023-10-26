@@ -24,19 +24,27 @@ def write_constr_to_session_state(slp):
     st.session_state["c_vec"] = c_vec
 
 
-def draw_items(height, max_noc, max_dist, colors): 
+def draw_items(height, max_noc, max_dist, colors, k, delta): 
 
     # setup RANDOMTREE and SOLVELINPROG object
     rt = RANDOMTREE(height = height, max_noc = max_noc, max_dist = max_dist, colors = colors)
-    fv = rt.get_fairness_vectors()
-    slp = SOlVELINPROG(random_tree = rt, k = 2, alpha = fv["alpha"], beta = fv["beta"])
+    fv = rt.get_fairness_vectors(delta)
+    slp = SOlVELINPROG(random_tree = rt, k = k, alpha = fv["alpha"], beta = fv["beta"])
+    res = slp.solve_prog()
     
     # For matrizes
     write_constr_to_session_state(slp)
     
     # For picture of tree
-    fig = rt.draw_tree()
-    st.session_state["random_tree"] = fig
+    tree_plot = rt.draw_tree()
+    color_table = rt.draw_color_table()
+    st.session_state["random_tree"] = tree_plot
+    st.session_state["color_table"] = color_table
+
+    # For result of linear program
+    st.session_state["solution_to_LP"] = slp.get_info(res.x)
+
+
 
 
 
@@ -74,8 +82,17 @@ fair clustering problem on a tree. The linear program has the following form:
 with tab2: 
 
     ### The Random Tree
+    st.subheader("The random tree")
     if "random_tree" in st.session_state:
         st.pyplot(st.session_state["random_tree"])
+    
+    st.subheader("Color Table") 
+    if "color_table" in st.session_state: 
+        st.pyplot(st.session_state["color_table"])
+
+    st.subheader("Solution to the linear program")
+    if "solution_to_LP" in st.session_state: 
+        st.text(st.session_state["solution_to_LP"])
 
 #### Tab 3 ####
 with tab3: 
@@ -170,13 +187,19 @@ with tab3:
 ############### Sidebar Page ###############
 with st.sidebar:
 
-    header = st.header("Adjust Random tree parameters")
+    st.header("Tree and LP parameters")
 
-    tree_height = st.slider("height", min_value=1, max_value=10, value=3)
-    max_noc = st.slider("max number of children", min_value=1, max_value=5, value=2)
-    max_dist = st.slider("max distance between nodes", min_value=1, max_value=10, value=1)
-    colors = st.slider("number of colors", min_value=2, max_value=10, value=2)
+    tree_height = st.slider("height", min_value=1, max_value=10, value=3, help="The height of the tree to generate.")
+    max_noc = st.slider("max number of children", min_value=1, max_value=5, value=2, help="Maximum number of children for each node.")
+    max_dist = st.slider("max dist", min_value=1, max_value=10, value=1, help="Maximum distance between two adjacent nodes.")
+    colors = st.slider("number of colors", min_value=2, max_value=10, value=2, help="The number of colors to color the tree.")
 
     kwargs = {"height": tree_height, "max_noc": max_noc, "max_dist": max_dist, "colors": colors}
 
-    generate_button = st.button("generate random tree", on_click = draw_items, kwargs = kwargs)
+    k = st.slider("k", min_value=1, max_value=10, value=2, help="The number of centers to be found.")
+    delta = st.slider("delta", min_value=0.0, max_value=1.0, value=0.0, step=0.1, 
+                      help="Adjust parameter to relax the fairness constraints.")
+    
+    kwargs = {"height": tree_height, "max_noc": max_noc, "max_dist": max_dist, "colors": colors, "k": k, "delta": delta}
+
+    solve_lin_prog_button = st.button("solve linear program", on_click = draw_items, kwargs = kwargs)
