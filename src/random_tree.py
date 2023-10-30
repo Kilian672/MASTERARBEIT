@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib as mpl
 import numpy as np
+import pandas as pd
 
 
 class RANDOMTREE:
@@ -221,6 +222,36 @@ class RANDOMTREE:
         except Exception as e: 
             print(e)
     
+    # def draw_color_table(self): 
+        
+    #     # Diagramm und Achsen definieren
+    #     fig, ax = plt.subplots()
+
+    #     # Verstecke die Achsen
+    #     fig.patch.set_visible(False)
+    #     ax.axis('off')
+    #     ax.axis('tight')
+
+    #     # Daten erstellen
+    #     noc = self.get_number_of_colors()
+    #     data_dict = {'Color': ["" for i in range(noc)], 'Number': [i for i in range(noc)]}
+    #     df = pd.DataFrame(data_dict)
+    
+    #     cmap = mpl.colormaps['plasma']
+    #     row_cols = [cmap(i) for i in range(noc)]
+    #     #row_cols = ['green', 'red', 'yellow', 'blue', 'pink']
+
+    #     #Tabelle erstellen
+    #     table = ax.barh(y = [1, 2, 3, 4, 5], align = "center", width=0.1)
+
+    #     #Tabelle anzeigen
+    #     fig.tight_layout()
+
+    #     plt.show()
+        
+    #     #return fig
+
+
     def draw_tree(self): 
         """
         Draw tree. 
@@ -228,11 +259,13 @@ class RANDOMTREE:
         -------
             None
         """
+        fig, ax = plt.subplots()
         pos = nx.spring_layout(self.Tree)
     
         # get node colors
         cols = [node[1] for node in self.Tree.nodes.data('color')]
-        nx.draw_networkx_nodes(self.Tree, pos, node_size = 500, node_color = cols)
+        nx.draw_networkx_nodes(self.Tree, pos, node_size = 500, node_color = cols, 
+                               ax=ax, cmap=mpl.colormaps['plasma'])
         nx.draw_networkx_edges(self.Tree, pos, arrows=False, label="weight")
 
         # add weight labels to edges 
@@ -241,7 +274,8 @@ class RANDOMTREE:
 
         nx.draw_networkx_labels(self.Tree, pos)
 
-        plt.show()
+        return fig
+    
 
     def get_fairness_vectors(self, delta=0): 
         """
@@ -283,7 +317,8 @@ class RANDOMTREE:
 
 if __name__ == "__main__": 
 
-    random_tree = RANDOMTREE(height=2, max_noc = 2, max_dist = 2, colors= 2)
-    random_tree.draw_tree()
+    random_tree = RANDOMTREE(height=10, max_noc = 2, max_dist = 10, colors= 5)
+    #random_tree.draw_tree()
+    random_tree.draw_color_table()
     
     

@@ -7,9 +7,9 @@ except:
     from random_tree import RANDOMTREE
 
 
-np.set_printoptions(threshold=sys.maxsize, linewidth=1000)
+np.set_printoptions(threshold=sys.maxsize, linewidth=200)
 
-class SOlVELINPROG: 
+class SOlVELINPROGTEST: 
     """
     This class is used to solve a specific class of Linear Programms given by a RANDOMTREE object.
     For further information see README.md.  
@@ -56,9 +56,8 @@ class SOlVELINPROG:
     def c(self): 
 
         n = self.n 
-        c = np.ones((n+n*n,))
-        c[0:n] = np.zeros(n)
-        c[n:] = self.dist_mat.flatten()
+        c = np.zeros((1+n+n*n,))
+        c[-1] = 1
         
         return c
 
@@ -66,11 +65,9 @@ class SOlVELINPROG:
 
         n = self.n
         l = self.l
-
-        #rows = 1 + n + 2*n*n + 2*n*l #### 1.) 
-        rows = 1 + n + n*n + 2*n*l   #### 2.) 
-         
-
+        
+        rows = 1 + n + 2*n*n + 2*n*l 
+        
         b = np.zeros((rows,))
 
         # First condition
@@ -83,13 +80,11 @@ class SOlVELINPROG:
         b[n+1: n+1+n*n] = np.zeros(n*n)
 
         # Fourth condition
-        # r = ?
-        #b[n+1+n*n: n+1+2*n*n] = r * np.ones(n*n)
+        b[n+1+n*n: n+1+2*n*n] = np.zeros(n*n)
 
         # Fifth condition
-        #b[n+1+2*n*n: n+1+2*n*n+2*n*l] = np.zeros(2*n*l)  #### 1.)
-        b[n+1+n*n: n+1+n*n+2*n*l] = np.zeros(2*n*l)       #### 2.)          
-        
+        b[n+1+2*n*n: n+1+2*n*n+2*n*l] = np.zeros(2*n*l) 
+               
         return b
         
 
@@ -97,12 +92,12 @@ class SOlVELINPROG:
         
         n = self.n
         l = self.l 
+        dist_mat = self.random_tree.get_dist_mat()
 
-        cols = n + n*n
+        cols = 1 + n + n*n
         
-        #rows = 1 + n + 2*n*n + 2*n*l  #### 1.) 
-        rows = 1 + n + n*n + 2*n*l     #### 2.)
-
+        rows = 1 + n + 2*n*n + 2*n*l  
+        
         A = np.zeros((rows, cols))
 
         # First condition
@@ -119,28 +114,28 @@ class SOlVELINPROG:
                 A[n+1+i+n*j, n+i+n*j] = 1
 
         # Fourth condition
-        #for j in range(n): 
-            #for i in range(n):
-                # A[1+n+n*n+i+4*j, n+i+4*j] = dist_mat[j,i]
-                #A[1+n+n*n+i+n*j, n+i+n*j] = dist_mat[j,i]
-                #A[1+n+n*n+i+n*j, n+i+n*j] = 1
+        A[1+n+n*n: 1+n+2*n*n, -1] = -np.ones(n*n)
 
+        for j in range(n): 
+            for i in range(n):
+                A[1+n+n*n+i+n*j, n+i+n*j] = dist_mat[j,i]
+            
         # Fifth condition
         for c, color in enumerate(self.color_list): 
             for i in self.color_dict.keys(): 
                 for j in self.color_dict.keys(): 
                     if self.color_dict[j] == color: 
-                        A[1+n+n*n+n*c+i, n+j*n+i] = 1-self.beta[color]
+                        A[1+n+2*n*n+n*c+i, n+j*n+i] = 1-self.beta[color]
                     else:
-                        A[1+n+n*n+n*c+i, n+j*n+i] = -self.beta[color] 
+                        A[1+n+2*n*n+n*c+i, n+j*n+i] = -self.beta[color] 
 
         for c, color in enumerate(self.color_list): 
             for i in self.color_dict.keys(): 
                 for j in self.color_dict.keys(): 
                     if self.color_dict[j] == color: 
-                        A[1+n+n*n+n*l+n*c+i, n+j*n+i] = self.alpha[color]-1
+                        A[1+n+2*n*n+n*l+n*c+i, n+j*n+i] = self.alpha[color]-1
                     else:
-                        A[1+n+n*n+n*l+n*c+i, n+j*n+i] = self.alpha[color] 
+                        A[1+n+2*n*n+n*l+n*c+i, n+j*n+i] = self.alpha[color] 
                 
         return A
     
@@ -155,34 +150,31 @@ class SOlVELINPROG:
         
         return res
 
-    def get_info(self, x): 
-
-        solution_string = ""
+    def get_info(self, x):
 
         if x is None: 
             print("The problem is infeasible.")
-            solution_string = solution_string + "The problem is infeasible."
-            return
+            return 
 
-        x = np.array(x)
+        print(f"The radius is {x[-1]}")
+        print("-----------------------------------------------------")
+
+        x = np.array(x[0:len(x)-1])
         x = x.reshape((int(len(x)/self.n),self.n))
 
         for j in range(len(x[0])): 
             if x[0][j] > 0: 
                 print(f"Node {j} is a center")
-                solution_string = solution_string + f"Node {j} is a center\n"
 
         print("-----------------------------------------------------")
-        solution_string = solution_string + "-----------------------------------------------------\n"
 
         y = x[1:]
         for j in range(y.shape[0]): 
             for i in range(y.shape[1]):
                 if y[j][i] > 0: 
                     print(f"Node {j} was assigned to center {i} with probability {y[j][i]}.")
-                    solution_string = solution_string + f"Node {j} was assigned to center {i} with probability {y[j][i]}.\n"
 
-        return solution_string
+
 
 
 if __name__ == "__main__":
@@ -206,12 +198,14 @@ if __name__ == "__main__":
     
 
     # initialize RANDOMTREE object 
-    random_tree = RANDOMTREE(2, 3, colors=2)
+    random_tree = RANDOMTREE(2, 2, colors=2)
     # get fairness vectors
     fv = random_tree.get_fairness_vectors()
     # initialize SOLVELINPROG object to solve LP
-    solve_lin_prog = SOlVELINPROG(random_tree, k=2, alpha = fv['alpha'], beta = fv['beta'])
+    solve_lin_prog = SOlVELINPROGTEST(random_tree, k=2, alpha = fv['alpha'], beta = fv['beta'])
     # Solve LP and get information about assignment
-    res = solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
+    print(solve_lin_prog.A())
+    #print(solve_lin_prog.solve_prog().x)
+    solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
     # Draw random tree
     random_tree.draw_tree()
