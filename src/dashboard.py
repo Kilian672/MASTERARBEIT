@@ -37,9 +37,9 @@ def draw_items(height, max_noc, max_dist, colors, k, delta):
     
     # For picture of tree
     tree_plot = rt.draw_tree()
-    color_table = rt.draw_color_table()
+    # color_table = rt.draw_color_table()
     st.session_state["random_tree"] = tree_plot
-    st.session_state["color_table"] = color_table
+    # st.session_state["color_table"] = color_table
 
     # For result of linear program
     st.session_state["solution_to_LP"] = slp.get_info(res.x)
@@ -56,10 +56,11 @@ with tab1:
 
     ### Introduction
     st.subheader("Introduction")
-    st.text(r"""In what follows we will try to visualize the vectors and matrices
-involved in a Linear Programm that is a first step in order to solve the 
-fair clustering problem on a tree. The linear program has the following form:  
-            """)
+    st.text("""
+        This dashboard was created in order to solve a linear programm, 
+        which should help to get a first idea on how to place the centers in the
+        fair k-center clustering problem on a tree. The linear programm looks as follows:    
+    """)
     st.latex(r'''
         \textbf{LP1} := \min \sum_{i,j \in V} d(i,j) \cdot x_{ji}, \\
         ''')
@@ -77,19 +78,42 @@ fair clustering problem on a tree. The linear program has the following form:
             x_{ji} \leq \beta_c \sum_{j \in V} 
             x_{ji} \qquad \forall i\in V, c\in C,
         ''')
+    st.text("where")
+    st.latex(r"""
+        \text{V} := \text{the set of nodes}, \\
+        \text{C} := \text{the set of colors}, \\
+        \text{k} := \text{the number of centers to open}, \\
+        \text{d}(i,j) := \text{the distance between node i and j}, \\
+        \text{y}_i := \text{open node i as a center}, \\
+        \text{x}_{ji} := \text{assign node j to center i}, \\
+        \alpha_c := \text{lower bound fairness vector for color c}, \\
+        \beta_c := \text{upper bound fairness vector for color c}, \\
+        \text{V}_c := \text{set of nodes with color c}.
+        
+       """)
+    
+    st.text("""
+        This dashboard will generate a random tree based on some input parameters, 
+        that the user can specify. Also the linear programm above will be filled 
+        with the tree information and a solution will be drawn together with the 
+        random tree in the "Tree" section. The "LP" section shows how the above mentioned 
+        linear program would look like in matrix notation. 
+    """)
 
 #### Tab2 ####
 with tab2: 
 
     ### The Random Tree
     st.subheader("The random tree")
+    st.text("The random tree looks as follows: ")
     if "random_tree" in st.session_state:
         st.pyplot(st.session_state["random_tree"])
     
-    st.subheader("Color Table") 
-    if "color_table" in st.session_state: 
-        st.pyplot(st.session_state["color_table"])
+    # st.subheader("Color Table") 
+    # if "color_table" in st.session_state: 
+    #     st.pyplot(st.session_state["color_table"])
 
+    # Solution to the LP
     st.subheader("Solution to the linear program")
     if "solution_to_LP" in st.session_state: 
         st.text(st.session_state["solution_to_LP"])
@@ -99,6 +123,7 @@ with tab3:
     
     ### The linear program in matrix notation
     st.header("The linear program in matrix notation")
+    ## Explanation
     st.text("Let ")
     st.latex(r"""n := \text{number of nodes}""")
     st.latex(r"""l := \text{number of colors}.""")
@@ -121,7 +146,7 @@ with tab3:
 
     ## The A matrix
     st.subheader("The A matrix")
-    st.text("In our case the vectors for the different constraints look like this: ")
+    st.text("In our case the row vectors of the A matrix look like this: ")
 
     # Constraint 1
     st.text("Constraint 1: ")

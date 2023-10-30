@@ -222,34 +222,34 @@ class RANDOMTREE:
         except Exception as e: 
             print(e)
     
-    def draw_color_table(self): 
+    # def draw_color_table(self): 
         
-        # Diagramm und Achsen definieren
-        fig, ax = plt.subplots()
+    #     # Diagramm und Achsen definieren
+    #     fig, ax = plt.subplots()
 
-        # Verstecke die Achsen
-        fig.patch.set_visible(False)
-        ax.axis('off')
-        ax.axis('tight')
+    #     # Verstecke die Achsen
+    #     fig.patch.set_visible(False)
+    #     ax.axis('off')
+    #     ax.axis('tight')
 
-        # Daten erstellen
-        noc = self.get_number_of_colors()
-        data_dict = {'Color': ["" for i in range(noc)], 'Number': [i for i in range(noc)]}
-        df = pd.DataFrame(data_dict)
+    #     # Daten erstellen
+    #     noc = self.get_number_of_colors()
+    #     data_dict = {'Color': ["" for i in range(noc)], 'Number': [i for i in range(noc)]}
+    #     df = pd.DataFrame(data_dict)
     
-        cmap = mpl.colormaps['plasma']
-        row_cols = [cmap(i) for i in range(noc)]
-        #row_cols = ['green', 'red', 'yellow', 'blue', 'pink']
+    #     cmap = mpl.colormaps['plasma']
+    #     row_cols = [cmap(i) for i in range(noc)]
+    #     #row_cols = ['green', 'red', 'yellow', 'blue', 'pink']
 
-        #Tabelle erstellen
-        table = ax.barh(y = [1, 2, 3, 4, 5], align = "center", width=0.1)
+    #     #Tabelle erstellen
+    #     table = ax.barh(y = [1, 2, 3, 4, 5], align = "center", width=0.1)
 
-        #Tabelle anzeigen
-        fig.tight_layout()
+    #     #Tabelle anzeigen
+    #     fig.tight_layout()
 
-        plt.show()
+    #     plt.show()
         
-        #return fig
+    #     #return fig
 
 
     def draw_tree(self): 
