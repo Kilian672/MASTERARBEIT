@@ -214,8 +214,8 @@ with st.sidebar:
 
     st.header("Tree and LP parameters")
 
-    tree_height = st.slider("height", min_value=1, max_value=10, value=3, help="The height of the tree to generate.")
-    max_noc = st.slider("max number of children", min_value=1, max_value=5, value=2, help="Maximum number of children for each node.")
+    tree_height = st.slider("height", min_value=1, max_value=4, value=3, help="The height of the tree to generate.")
+    max_noc = st.slider("max number of children", min_value=1, max_value=3, value=2, help="Maximum number of children for each node.")
     max_dist = st.slider("max dist", min_value=1, max_value=10, value=1, help="Maximum distance between two adjacent nodes.")
     colors = st.slider("number of colors", min_value=2, max_value=10, value=2, help="The number of colors to color the tree.")
 
