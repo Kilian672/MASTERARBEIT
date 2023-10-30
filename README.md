@@ -11,7 +11,19 @@ git checkout -b feature/test
 ```python
 pip install -r requirements.txt
 ```
-4. open solve_lin_prog.py and run file
+4. Now you have two options. Either you can run the dashboard, which is a tool to visualize the random tree, or you can run the solve_lin_prog.py file. 
+* Run dashboard: 
+    * Navigate to src folder: 
+    ```
+    cd ./src
+    ```
+    * Execute dashboard
+    ```
+    streamlit run dashboard.py
+    ```
+* Run solve_lin_prog.py file: 
+    * open solve_lin_prog.py
+    * run file
 ## Create Random Tree
 In this section we will explain how to initialize an object of  the RANDOMTREE class. The RANDOMTREE class is used to generate random samples of a tree. There are different options to either color the nodes or to add edge weights. Also one can initialize a deterministict tree by simply providing an adjacency list for the nodes. The RANDOMTREE class has several usefull functions such as a function to visualize the tree. In the following we will give examples on how to create a RANDOMTREE object and how to visualize it. 
 

@@ -213,6 +213,5 @@ if __name__ == "__main__":
     solve_lin_prog = SOlVELINPROG(random_tree, k=2, alpha = fv['alpha'], beta = fv['beta'])
     # Solve LP and get information about assignment
     res = solve_lin_prog.get_info(solve_lin_prog.solve_prog().x)
-    print(res)
     # Draw random tree
     random_tree.draw_tree()
