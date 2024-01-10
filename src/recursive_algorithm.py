@@ -4,8 +4,6 @@ import time
 import copy
 
 
-
-# Third Algorithm
 class FAIRCLUSTERING: 
 
     def __init__(self): 
@@ -24,38 +22,6 @@ class FAIRCLUSTERING:
         constr4 = beta[1] >= r/(g+r)
 
         return constr1 and constr2 and constr3 and constr4 
-
-    def getRadius(self, V, g_sub, r_sub, g_new, r_new):
-    
-        used_nodes = []
-        for v in enumerate(V): 
-            if g_sub == 0 and r_sub == 0: 
-                break
-            else: 
-                if v[1] == 'g' and g_sub > 0: 
-                    used_nodes.append(v)
-                    g_sub = g_sub-1
-                if v[1] == 'r' and r_sub > 0: 
-                    used_nodes.append(v)
-                    r_sub = r_sub-1
-        
-        erg = []
-        for v in V:  
-            
-            if g_new == 0 and r_new == 0: 
-                break
-            elif v in used_nodes: 
-                continue
-            else: 
-                if v[1] == 'g' and g_new > 0: 
-                    erg.append(v)
-                    g_new = g_new-1
-                if v[1] == 'r' and r_new > 0: 
-                    erg.append(v)
-                    r_new = r_new-1
-                
-      
-        return (erg[len(erg)-1][0]-erg[0][0])/2
 
     def getRadiusOfSubprob(self, V, subproblem): 
 
@@ -89,6 +55,8 @@ class FAIRCLUSTERING:
     
     def fairClustering3(self, V, G, R, alpha, beta, k): 
         
+        # Top Bottom Approach
+
         if (G,R,k) in self.lookup.keys(): 
             return self.lookup[(G,R,k)]
 
@@ -128,6 +96,7 @@ class FAIRCLUSTERING:
 
     def fairClustering4(self, V, alpha, beta, K): 
         
+        # Bottom Up Approach
         # Zeitkomplexität = O(k*n*n*n*n*k*n) = O(k^2*n^5)
 
         G = len([v for v in V if v[1] == 'g'])
@@ -194,7 +163,6 @@ if __name__ == "__main__":
     
     fairClust = FAIRCLUSTERING()
     start_time = time.perf_counter()
-    #print(fairClust.fairClustering3(V,G,R,alpha, beta, k))
     print(fairClust.fairClustering4(V, alpha, beta, k))
     end_time = time.perf_counter()
     execution_time = end_time - start_time

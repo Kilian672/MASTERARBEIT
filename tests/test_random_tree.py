@@ -1,7 +1,7 @@
 # test_random_tree.py
 
 import unittest
-from src.random_tree import RANDOMTREE
+from src.old_scripts.random_tree import RANDOMTREE
 
 
 class TestClass(unittest.TestCase):
