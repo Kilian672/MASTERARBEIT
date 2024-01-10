@@ -2,9 +2,9 @@ import sys
 import numpy as np
 from scipy.optimize import linprog
 try: 
-    from src.random_tree import RANDOMTREE
+    from src.old_scripts.random_tree import RANDOMTREE
 except: 
-    from random_tree import RANDOMTREE
+    from src.old_scripts.random_tree import RANDOMTREE
 
 
 np.set_printoptions(threshold=sys.maxsize, linewidth=1000)

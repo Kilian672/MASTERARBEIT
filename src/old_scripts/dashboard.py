@@ -1,7 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-from random_tree import RANDOMTREE
-from solve_lin_prog import SOlVELINPROG
+from src.old_scripts.random_tree import RANDOMTREE
+from src.old_scripts.solve_lin_prog import SOlVELINPROG
 
 ############### utils ###############
 def write_constr_to_session_state(slp):

@@ -3,8 +3,8 @@
 import unittest
 import numpy as np
 
-from src.solve_lin_prog import SOlVELINPROG
-from src.random_tree import RANDOMTREE
+from src.old_scripts.solve_lin_prog import SOlVELINPROG
+from src.old_scripts.random_tree import RANDOMTREE
 
 
 class TestClass(unittest.TestCase):
