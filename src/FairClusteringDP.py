@@ -55,7 +55,7 @@ class FAIRCLUSTERING:
     
     def fairClustering3(self, V, G, R, alpha, beta, k): 
         
-        # Top Bottom Approach
+        # Top Down Approach
 
         if (G,R,k) in self.lookup.keys(): 
             return self.lookup[(G,R,k)]
@@ -105,7 +105,8 @@ class FAIRCLUSTERING:
         
         for k in range(1, K+1):
             for g in range(1,G+1): 
-                    for r in range(1,R+1):  
+                    for r in range(1,R+1):
+                        # Base Case  
                         if k == 1: 
                             if self.isFeasible(g,r,alpha,beta): 
                                 opt_rad, opt_phi = self.getRadiusOfSubprob(V, [(g,r)])
